@@ -9,6 +9,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        supportFragmentManager.setFragmentResultListener("ve_tao", this) { _, ketQua ->
+            val manHinhXacNhan = XacNhanVeFragment().apply {
+                arguments = ketQua
+            }
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentHost, manHinhXacNhan)
+                .addToBackStack(null)
+                .commit()
+        }
+
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentHost, NhapVeFragment())
