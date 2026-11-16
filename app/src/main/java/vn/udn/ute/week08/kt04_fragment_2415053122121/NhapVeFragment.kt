@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 
 class NhapVeFragment : Fragment(R.layout.fragment_nhap_ve) {
@@ -13,7 +12,8 @@ class NhapVeFragment : Fragment(R.layout.fragment_nhap_ve) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        soThuTuTiepTheo_2121 = savedInstanceState?.getInt("soThuTuTiepTheo_2121") ?: 1
+        soThuTuTiepTheo_2121 =
+            savedInstanceState?.getInt("soThuTuTiepTheo_2121", 1) ?: 1
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -31,15 +31,21 @@ class NhapVeFragment : Fragment(R.layout.fragment_nhap_ve) {
         edtSoLuong.error = null
 
         val hoTen = edtHoTen.text.toString().chuanHoaTen_2121()
-        if (hoTen.isEmpty()) {
-            edtHoTen.error = "Vui lòng nhập họ tên"
+        if (hoTen.length !in 2..40) {
+            edtHoTen.error = "Họ tên phải dài từ 2 đến 40 ký tự"
             edtHoTen.requestFocus()
             return
         }
 
-        val soLuong = edtSoLuong.text.toString().trim().toIntOrNull()
+        val chuoiSoLuong = edtSoLuong.text.toString().trim()
+        val soLuong = chuoiSoLuong.toIntOrNull()
         if (soLuong == null) {
             edtSoLuong.error = "Số lượng phải là số nguyên"
+            edtSoLuong.requestFocus()
+            return
+        }
+        if (soLuong !in 1..9) {
+            edtSoLuong.error = "Số lượng phải từ 1 đến 9"
             edtSoLuong.requestFocus()
             return
         }
@@ -51,14 +57,12 @@ class NhapVeFragment : Fragment(R.layout.fragment_nhap_ve) {
         )
         soThuTuTiepTheo_2121++
 
-        parentFragmentManager.setFragmentResult(
-            "ve_tao",
-            bundleOf(
-                "maVe" to phieuVe.maVe_2121,
-                "hoTen" to phieuVe.hoTen_2121,
-                "soLuong" to phieuVe.soLuong_2121
-            )
-        )
+        val ketQua = Bundle().apply {
+            putString("maVe", phieuVe.maVe_2121)
+            putString("hoTen", phieuVe.hoTen_2121)
+            putInt("soLuong", phieuVe.soLuong_2121)
+        }
+        parentFragmentManager.setFragmentResult("ve_tao", ketQua)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
