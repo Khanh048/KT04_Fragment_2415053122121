@@ -8,3 +8,5 @@ TestResults/
 *.user
 *.suo
 *.tmp
+.kotlin/
+git_log.txt
